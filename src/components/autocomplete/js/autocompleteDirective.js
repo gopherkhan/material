@@ -255,35 +255,36 @@ function MdAutocomplete ($$mdSvgRegistry) {
     controller:   'MdAutocompleteCtrl',
     controllerAs: '$mdAutocompleteCtrl',
     scope:        {
-      inputName:          '@mdInputName',
-      inputMinlength:     '@mdInputMinlength',
-      inputMaxlength:     '@mdInputMaxlength',
-      searchText:         '=?mdSearchText',
-      selectedItem:       '=?mdSelectedItem',
-      itemsExpr:          '@mdItems',
-      itemText:           '&mdItemText',
-      placeholder:        '@placeholder',
-      ariaDescribedBy:    '@?ariaDescribedby',
-      noCache:            '=?mdNoCache',
-      requireMatch:       '=?mdRequireMatch',
-      selectOnMatch:      '=?mdSelectOnMatch',
-      matchInsensitive:   '=?mdMatchCaseInsensitive',
-      itemChange:         '&?mdSelectedItemChange',
-      textChange:         '&?mdSearchTextChange',
-      minLength:          '=?mdMinLength',
-      delay:              '=?mdDelay',
-      autofocus:          '=?mdAutofocus',
-      floatingLabel:      '@?mdFloatingLabel',
-      autoselect:         '=?mdAutoselect',
-      menuClass:          '@?mdMenuClass',
-      menuContainerClass: '@?mdMenuContainerClass',
-      inputClass:         '@?mdInputClass',
-      inputId:            '@?mdInputId',
-      escapeOptions:      '@?mdEscapeOptions',
-      dropdownItems:      '=?mdDropdownItems',
-      dropdownPosition:   '@?mdDropdownPosition',
-      clearButton:        '=?mdClearButton',
-      selectedMessage:    '@?mdSelectedMessage'
+      inputName:            '@mdInputName',
+      inputMinlength:       '@mdInputMinlength',
+      inputMaxlength:       '@mdInputMaxlength',
+      searchText:           '=?mdSearchText',
+      selectedItem:         '=?mdSelectedItem',
+      itemsExpr:            '@mdItems',
+      itemText:             '&mdItemText',
+      placeholder:          '@placeholder',
+      ariaDescribedBy:      '@?ariaDescribedby',
+      noCache:              '=?mdNoCache',
+      requireMatch:         '=?mdRequireMatch',
+      selectOnMatch:        '=?mdSelectOnMatch',
+      matchInsensitive:     '=?mdMatchCaseInsensitive',
+      itemChange:           '&?mdSelectedItemChange',
+      textChange:           '&?mdSearchTextChange',
+      minLength:            '=?mdMinLength',
+      delay:                '=?mdDelay',
+      autofocus:            '=?mdAutofocus',
+      floatingLabel:        '@?mdFloatingLabel',
+      autoselect:           '=?mdAutoselect',
+      menuClass:            '@?mdMenuClass',
+      menuContainerClass:   '@?mdMenuContainerClass',
+      inputClass:           '@?mdInputClass',
+      inputId:              '@?mdInputId',
+      escapeOptions:        '@?mdEscapeOptions',
+      dropdownItems:        '=?mdDropdownItems',
+      dropdownPosition:     '@?mdDropdownPosition',
+      clearButton:          '=?mdClearButton',
+      selectedMessage:      '@?mdSelectedMessage',
+      disableVirtualRepeat: '=?disableVirtualRepeat'
     },
     compile: function(tElement, tAttrs) {
       var attributes = ['md-select-on-focus', 'md-no-asterisk', 'ng-trim', 'ng-pattern'];
@@ -325,7 +326,12 @@ function MdAutocomplete ($$mdSvgRegistry) {
       // will hold the actual tabindex.
       element.attr('tabindex', '-1');
 
+      var disableVirtualRepeat = element.attr('disable-virtual-repeat');
+      var containerType = disableVirtualRepeat ? 'div' : 'md-virtual-repeat-container';
+      var repeatType = disableVirtualRepeat ? 'ng-repeat' : 'md-virtual-repeat';
+
       return '\
+        <!-- AUTOOOOOLOLOLOLO -->\
         <md-autocomplete-wrap\
             ng-class="{ \'md-whiteframe-z1\': !floatingLabel, \
                         \'md-menu-showing\': !$mdAutocompleteCtrl.hidden, \
@@ -336,7 +342,7 @@ function MdAutocomplete ($$mdSvgRegistry) {
               class="' + (attr.mdFloatingLabel ? 'md-inline' : '') + '"\
               ng-if="$mdAutocompleteCtrl.loadingIsVisible()"\
               md-mode="indeterminate"></md-progress-linear>\
-          <md-virtual-repeat-container\
+          <' + containerType + '\
               md-auto-shrink\
               md-auto-shrink-min="1"\
               ng-mouseenter="$mdAutocompleteCtrl.listEnter()"\
@@ -350,7 +356,7 @@ function MdAutocomplete ($$mdSvgRegistry) {
                 ng-class="::menuClass"\
                 id="ul-{{$mdAutocompleteCtrl.id}}"\
                 role="listbox">\
-              <li md-virtual-repeat="item in $mdAutocompleteCtrl.matches"\
+              <li ' + repeatType + ' ="item in $mdAutocompleteCtrl.matches"\
                   ng-class="{ selected: $index === $mdAutocompleteCtrl.index }"\
                   ng-attr-id="{{$index === $mdAutocompleteCtrl.index ? \'selected_option\' : undefined}}"\
                   ng-click="$mdAutocompleteCtrl.select($index)"\
@@ -362,7 +368,7 @@ function MdAutocomplete ($$mdSvgRegistry) {
                   ' + itemTemplate + '\
                   </li>' + noItemsTemplate + '\
             </ul>\
-          </md-virtual-repeat-container>\
+          </' + containerType + '>\
         </md-autocomplete-wrap>';
 
       function getItemTemplate() {
