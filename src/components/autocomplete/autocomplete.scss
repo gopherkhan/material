@@ -180,7 +180,8 @@ md-autocomplete {
   }
 }
 
-.md-virtual-repeat-container.md-autocomplete-suggestions-container {
+.md-virtual-repeat-container.md-autocomplete-suggestions-container,
+.md-autocomplete-variable-height-list-container {
   position: absolute;
   box-shadow: 0 2px 5px rgba(black, 0.25);
   z-index: $z-index-tooltip;
@@ -194,7 +195,12 @@ md-autocomplete {
   }
 }
 
-.md-virtual-repeat-container.md-not-found {
+.md-autocomplete-variable-height-list-container {
+  overflow-y: auto;
+}
+
+.md-virtual-repeat-container.md-not-found,
+.md-autocomplete-variable-height-list-container.md-not-found {
   height: $md-autocomplete-item-height;
 }
 

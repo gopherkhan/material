@@ -308,6 +308,8 @@ function MdAutocomplete ($$mdSvgRegistry) {
         if (!angular.isDefined(attrs.mdClearButton) && !scope.floatingLabel) {
           scope.clearButton = true;
         }
+
+        scope.disableVirtualRepeat = !!element.attr('disable-virtual-repeat');
       };
     },
     template:     function (element, attr) {
@@ -329,9 +331,16 @@ function MdAutocomplete ($$mdSvgRegistry) {
       var disableVirtualRepeat = element.attr('disable-virtual-repeat');
       var containerType = disableVirtualRepeat ? 'div' : 'md-virtual-repeat-container';
       var repeatType = disableVirtualRepeat ? 'ng-repeat' : 'md-virtual-repeat';
+      var intermediateTags = disableVirtualRepeat ?
+            '\
+            <div class="md-autocomplete-variable-height-list-container md-whiteframe-zl" role="presentation">\
+              <div class="md-autocomplete-variable-height-list-scroller" role="presentation">' : '';
+      var intermediateClosingTags = disableVirtualRepeat ?
+              '\
+                </div>\
+                </div>' : '';
 
       return '\
-        <!-- AUTOOOOOLOLOLOLO -->\
         <md-autocomplete-wrap\
             ng-class="{ \'md-whiteframe-z1\': !floatingLabel, \
                         \'md-menu-showing\': !$mdAutocompleteCtrl.hidden, \
@@ -351,8 +360,9 @@ function MdAutocomplete ($$mdSvgRegistry) {
               ng-hide="$mdAutocompleteCtrl.hidden"\
               class="md-autocomplete-suggestions-container md-whiteframe-z1' + menuContainerClass + '"\
               ng-class="{ \'md-not-found\': $mdAutocompleteCtrl.notFoundVisible() }"\
-              role="presentation">\
-            <ul class="md-autocomplete-suggestions"\
+              role="presentation">'
+            + intermediateTags +
+            '<ul class="md-autocomplete-suggestions"\
                 ng-class="::menuClass"\
                 id="ul-{{$mdAutocompleteCtrl.id}}"\
                 role="listbox">\
@@ -367,8 +377,9 @@ function MdAutocomplete ($$mdSvgRegistry) {
                   md-extra-name="$mdAutocompleteCtrl.itemName">\
                   ' + itemTemplate + '\
                   </li>' + noItemsTemplate + '\
-            </ul>\
-          </' + containerType + '>\
+            </ul>'
+            + intermediateClosingTags +
+          '</' + containerType + '>\
         </md-autocomplete-wrap>';
 
       function getItemTemplate() {
