@@ -180,10 +180,6 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
      * Makes sure that the menu doesn't go off of the screen on either side.
      */
     function correctHorizontalAlignment () {
-      // this one is problematic?
-      if (!elements.scrollContainer) {
-        return;
-      }
       var dropdown = elements.scrollContainer.getBoundingClientRect(),
           styles   = {};
       if (dropdown.right > root.right - MENU_PADDING) {
@@ -263,7 +259,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
 
     var snapWrap = gatherSnapWrap();
 
-    var diableVirtualRepeat = !!$element.attr('disable-virtual-repeat');
+    var diableVirtualRepeat = !!$scope.disableVirtualRepeat;
     elements = {
       main:  $element[0],
       scrollContainer: $element[0].querySelector('.md-virtual-repeat-container, .md-autocomplete-variable-height-list-container'),
@@ -446,10 +442,6 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
     selectedItemWatchers.forEach(function (watcher) {
       watcher(selectedItem, previousSelectedItem);
     });
-
-    if ($scope.disableVirtualRepeat) {
-      elements.scrollContainer.classList.add('ng-hide');
-    }
   }
 
   /**
@@ -520,16 +512,6 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
     if (!noBlur) {
       ctrl.hidden = shouldHide();
       evalAttr('ngBlur', { $event: $event });
-      if ($scope.disableVirtualRepeat) {
-        $timeout(function() {
-          if (ctrl.hidden) {
-            elements.scrollContainer.classList.add('ng-hide');
-          } else {
-            elements.scrollContainer.classList.remove('ng-hide');
-          }
-        }, 200)
-
-      }
     }
   }
 
@@ -558,9 +540,6 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
     ctrl.hidden = shouldHide();
 
     evalAttr('ngFocus', { $event: $event });
-    if ($scope.disableVirtualRepeat) {
-      elements.scrollContainer.classList.remove('ng-hide');
-    }
   }
 
   /**
@@ -960,7 +939,6 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    */
   function updateScroll () {
     if (!elements.li[0]) return;
-    if (!elements.scrollContainer || !elements.scroller) return;
     var height = elements.li[0].offsetHeight,
         top = height * ctrl.index,
         bot = top + height,
@@ -978,7 +956,6 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
   }
 
   function scrollTo (offset) {
-    if (!elements.scrollContainer) return;
     elements.$.scrollContainer.controller('mdVirtualRepeatContainer').scrollTo(offset);
   }
 

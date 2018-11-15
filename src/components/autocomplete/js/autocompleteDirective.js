@@ -309,7 +309,7 @@ function MdAutocomplete ($$mdSvgRegistry) {
           scope.clearButton = true;
         }
 
-        scope.disableVirtualRepeat = !!element.attr('disable-virtual-repeat');
+        scope.disableVirtualRepeat = angular.isDefined(attrs.disableVirtualRepeat);
       };
     },
     template:     function (element, attr) {
@@ -328,12 +328,13 @@ function MdAutocomplete ($$mdSvgRegistry) {
       // will hold the actual tabindex.
       element.attr('tabindex', '-1');
 
-      var disableVirtualRepeat = element.attr('disable-virtual-repeat');
+      var disableVirtualRepeat = $mdAutocompleteCtrl.scope.disableVirtualRepeat;
       var containerType = disableVirtualRepeat ? 'div' : 'md-virtual-repeat-container';
       var repeatType = disableVirtualRepeat ? 'ng-repeat' : 'md-virtual-repeat';
       var intermediateTags = disableVirtualRepeat ?
             '\
-            <div class="md-autocomplete-variable-height-list-container md-whiteframe-zl" role="presentation">\
+            <div class="md-autocomplete-variable-height-list-container md-whiteframe-z1" role="presentation"\
+                ng-class="{ \'ng-hide\': $mdAutocompleteCtrl.hidden }">\
               <div class="md-autocomplete-variable-height-list-scroller" role="presentation">' : '';
       var intermediateClosingTags = disableVirtualRepeat ?
               '\
@@ -396,7 +397,6 @@ function MdAutocomplete ($$mdSvgRegistry) {
             ? '<li ng-if="$mdAutocompleteCtrl.notFoundVisible()"\
                          md-autocomplete-parent-scope>' + template + '</li>'
             : '';
-
       }
 
       function getInputElement () {
